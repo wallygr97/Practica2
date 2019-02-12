@@ -21,6 +21,7 @@ public class Main {
 
         config.setClassForTemplateLoading(Main.class, "/");
 
+
         //añadir un nuevo estudiante atraves del freemarker
         //get te permite manejar la url
 
@@ -30,7 +31,7 @@ public class Main {
         ArrayList<Estudiante> StudentList = new ArrayList<Estudiante>();
 
         Spark.get("/", (request, response) -> {
-            Template templateInicio = config.getTemplate("oscarPlantillas/paginaPrincipal.ftl");
+            Template templateInicio = config.getTemplate("templates/paginaPrincipal.ftl");
             StringWriter writer = new StringWriter();
             /*
                Se le asigna la plantilla a la cual se va a acceder y poner en la dirección puesta en el get, y luego
@@ -38,12 +39,12 @@ public class Main {
         */
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("listasDeEstudiantes", StudentList);
-            attributes.put("tamanoDeLista", StudentList.size() > 0);
+            attributes.put("tamanoLista", StudentList.size() > 0);
             templateInicio.process(attributes, writer);
             return writer;
         });
 
-        Spark.get("/Agregar", (request, response) -> {
+        Spark.get("/agregarEstudiante", (request, response) -> {
             Template templateInicio = config.getTemplate("templates/agregarEstudiante.ftl");//se le asigna la plantilla a cual deba acceder a la ruta
             return templateInicio;//se retorna para mostrarse
         });
@@ -66,14 +67,14 @@ public class Main {
         });
 
 
-        Spark.get("/Modificar/:id", (request, response) -> {
+        Spark.get("/modificarEstudiante/:id", (request, response) -> {
             Template resultTemplate = config.getTemplate("Templates/modificarEstudiante.ftl");
             StringWriter writer = new StringWriter();
 
             int id = Integer.parseInt(request.params("id"));
 
             Map<String, Object> atributos = new HashMap<>();
-            atributos.put("Estudiante", StudentList.get(id));
+            atributos.put("Estudiantex", StudentList.get(id));
 
             resultTemplate.process(atributos, writer);
             return writer;
@@ -82,7 +83,7 @@ public class Main {
 
         // POST - UPDATE Student
 
-        Spark.post("/ModificarEstudiantes", (request, response) -> {
+        Spark.post("/modificarEstudiante", (request, response) -> {
             StringWriter writer = new StringWriter();
 
             try {
@@ -92,20 +93,20 @@ public class Main {
                 String telefono = request.queryParams("telefono");
                 Estudiante estudiante = new Estudiante(Integer.parseInt(matricula), nombre, apellido, telefono);
                 //return om.writeValueAsString("user with id " + matricula+ " is updated!");
-                for (Estudiante estudianteX: StudentList)
+                for (Estudiante estudiantex: StudentList)
                 {
-                    if(estudianteX.getMatricula() == estudiante.getMatricula())
+                    if(estudiante.getMatricula() == estudiante.getMatricula())
                     {
-                        estudianteX.setNombre(estudiante.getNombre());
-                        estudianteX.setApellido(estudiante.getApellido());
-                        estudianteX.setMatricula(estudiante.getMatricula());
-                        estudianteX.setTelefono(estudiante.getTelefono());
+                        estudiantex.setNombre(estudiante.getNombre());
+                        estudiantex.setApellido(estudiante.getApellido());
+                        estudiantex.setMatricula(estudiante.getMatricula());
+                        estudiantex.setTelefono(estudiante.getTelefono());
                         break;
                     }
                 }
                 response.redirect("/");
             }catch (Exception e){
-                System.out.println("Ocurrió un error a modificar el estudiante " + e.toString());
+                System.out.println("Ocurrió un error a modificar el estudiante "  + e.toString());
                 response.redirect("/");
             }
             return writer;
@@ -122,8 +123,8 @@ public class Main {
         });
 
         //enseñar la lista de estudiante actual
-        Spark.get("/VisualizarEstudiante/:id", (request, response) -> {
-            Template resultTemplate = config.getTemplate("templates/visualizarEstudiante.ftl");
+        Spark.get("/mostrarEstudiante/:id", (request, response) -> {
+            Template resultTemplate = config.getTemplate("templates/mostrarEstudiante.ftl");
             StringWriter writer = new StringWriter();
 
             int id = Integer.parseInt(request.params("id"));

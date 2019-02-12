@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>CRUD</title>
+    <title>CRUD</title
 
 
 
@@ -27,12 +27,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="/">Inicio
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="/agregarEstudiante">Agregar</a>
                 </li>
                 <li class="nav-item">
@@ -48,42 +48,24 @@
 
 <!-- Page Content -->
 <div class="container">
-
     <header class="jumbotron my-4 text-center">
-        <h1 class="display-3">Añadir un estudiante</h1>
+        <h1 class="display-3">Mostrar un estudiante</h1>
 
     </header>
     <hr>
-    <form method="post" action="/AgregarALaLista">
-
-        <div class="form-group">
-            <label for="matricula">Matricula</label>
-            <input type="text" class="form-control" id="matricula" name="matricula" placeholder="Matricula" required>
+    <div class="card">
+        <div class="text-center"><h3><span class="color: alert-primary">El estudiante a enseñar --> ${EstudianteX.nombre}</span></h3></div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><span class="font-weight-bold">Matricula: </span>${EstudianteX.matricula?string["0"]}</span></li>
+                <li class="list-group-item"><span class="font-weight-bold">Nombre: </span>${EstudianteX.nombre}</li>
+                <li class="list-group-item"><span class="font-weight-bold">Apellido: </span>${EstudianteX.apellido}</li>
+                <li class="list-group-item"><span class="font-weight-bold">Teléfono: </span>${EstudianteX.telefono}</li>
+            </ul>
         </div>
-
-        <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" class="form-control"  id="nombre" name="nombre" placeholder="Nombre" required>
-        </div>
-
-        <div class="form-group">
-            <label for="apellido">Apellido</label>
-            <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido" required>
-        </div>
-
-        <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Telefono" required>
-        </div>
-
-        <input type="submit" class="btn btn-primary" value="Agregar">
-
-    </form>
+    </div>
 </div>
 <!-- /.container -->
-
-<!-- Bootstrap core JavaScript -->
-
 
 </body>
 
