@@ -4,6 +4,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import spark.Spark;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static spark.route.HttpMethod.get;
 import java.io.StringWriter;
 
@@ -42,8 +44,95 @@ public class Main {
         });
 
         Spark.get("/Agregar", (request, response) -> {
-            Template templateInicio = config.getTemplate("templates/agregarEstudiante.ftl");
-            return templateInicio;
+            Template templateInicio = config.getTemplate("templates/agregarEstudiante.ftl");//se le asigna la plantilla a cual deba acceder a la ruta
+            return templateInicio;//se retorna para mostrarse
+        });
+
+        // POST - Add a Student
+        Spark.post("/AgregarALaLista", (request, response) -> {
+            StringWriter writer = new StringWriter();
+            try {
+                String matricula = request.queryParams("matricula");
+                String nombre = request.queryParams("nombre");
+                String apellido = request.queryParams("apellido");
+                String telefono = request.queryParams("telefono");
+                StudentList.add(new Estudiante(Integer.parseInt(matricula), nombre, apellido, telefono));
+                response.redirect("/");
+            }catch (Exception e){
+                System.out.println(e);
+                response.redirect("/Agregar");
+            }
+            return writer;
+        });
+
+
+        Spark.get("/Modificar/:id", (request, response) -> {
+            Template resultTemplate = config.getTemplate("Templates/modificarEstudiante.ftl");
+            StringWriter writer = new StringWriter();
+
+            int id = Integer.parseInt(request.params("id"));
+
+            Map<String, Object> atributos = new HashMap<>();
+            atributos.put("Estudiante", StudentList.get(id));
+
+            resultTemplate.process(atributos, writer);
+            return writer;
+        });
+
+
+        // POST - UPDATE Student
+
+        Spark.post("/ModificarEstudiantes", (request, response) -> {
+            StringWriter writer = new StringWriter();
+
+            try {
+                String matricula = request.queryParams("matricula");
+                String nombre = request.queryParams("nombre");
+                String apellido = request.queryParams("apellido");
+                String telefono = request.queryParams("telefono");
+                Estudiante estudiante = new Estudiante(Integer.parseInt(matricula), nombre, apellido, telefono);
+                //return om.writeValueAsString("user with id " + matricula+ " is updated!");
+                for (Estudiante estudianteX: StudentList)
+                {
+                    if(estudianteX.getMatricula() == estudiante.getMatricula())
+                    {
+                        estudianteX.setNombre(estudiante.getNombre());
+                        estudianteX.setApellido(estudiante.getApellido());
+                        estudianteX.setMatricula(estudiante.getMatricula());
+                        estudianteX.setTelefono(estudiante.getTelefono());
+                        break;
+                    }
+                }
+                response.redirect("/");
+            }catch (Exception e){
+                System.out.println("Ocurrió un error a modificar el estudiante " + e.toString());
+                response.redirect("/");
+            }
+            return writer;
+        });
+
+        // Eliminar un estudiante de acuerdo a su parametro Id
+        Spark.get("/EliminarDeLaListaDeEstudiantes/:id", (request, response) -> {
+            StringWriter writer = new StringWriter();
+            int id = Integer.parseInt(request.params("id"));
+
+            StudentList.remove(id);
+            response.redirect("/");
+            return writer;
+        });
+
+        //enseñar la lista de estudiante actual
+        Spark.get("/VisualizarEstudiante/:id", (request, response) -> {
+            Template resultTemplate = config.getTemplate("templates/visualizarEstudiante.ftl");
+            StringWriter writer = new StringWriter();
+
+            int id = Integer.parseInt(request.params("id"));
+
+            Map<String, Object> atributos = new HashMap<>();
+            atributos.put("EstudianteX", StudentList.get(id));
+
+            resultTemplate.process(atributos, writer);
+            return writer;
         });
 
 
